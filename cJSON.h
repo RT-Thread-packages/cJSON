@@ -40,8 +40,6 @@ extern "C"
 #define cJSON_IsReference 256
 #define cJSON_StringIsConst 512
 	
-typedef unsigned int size_t;
-
 /* The cJSON structure: */
 typedef struct cJSON {
 	struct cJSON *next,*prev;	/* next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem */
