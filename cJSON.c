@@ -78,7 +78,11 @@
 #endif
 
 #ifndef NAN
+#ifdef _WIN32
+#define NAN sqrt(-1.0)
+#else
 #define NAN 0.0/0.0
+#endif
 #endif
 
 typedef struct {
@@ -92,9 +96,9 @@ CJSON_PUBLIC(const char *) cJSON_GetErrorPtr(void)
     return (const char*) (global_error.json + global_error.position);
 }
 
-CJSON_PUBLIC(char *) cJSON_GetStringValue(const cJSON * const item) 
+CJSON_PUBLIC(char *) cJSON_GetStringValue(const cJSON * const item)
 {
-    if (!cJSON_IsString(item)) 
+    if (!cJSON_IsString(item))
     {
         return NULL;
     }
@@ -102,9 +106,9 @@ CJSON_PUBLIC(char *) cJSON_GetStringValue(const cJSON * const item)
     return item->valuestring;
 }
 
-CJSON_PUBLIC(double) cJSON_GetNumberValue(const cJSON * const item) 
+CJSON_PUBLIC(double) cJSON_GetNumberValue(const cJSON * const item)
 {
-    if (!cJSON_IsNumber(item)) 
+    if (!cJSON_IsNumber(item))
     {
         return (double) NAN;
     }
@@ -507,10 +511,8 @@ static unsigned char* ensure(printbuffer * const p, size_t needed)
 
             return NULL;
         }
-        if (newbuffer)
-        {
-            memcpy(newbuffer, p->buffer, p->offset + 1);
-        }
+
+        memcpy(newbuffer, p->buffer, p->offset + 1);
         p->hooks.deallocate(p->buffer);
     }
     p->length = newsize;
@@ -1101,7 +1103,7 @@ CJSON_PUBLIC(cJSON *) cJSON_ParseWithLengthOpts(const char *value, size_t buffer
     }
 
     buffer.content = (const unsigned char*)value;
-    buffer.length = buffer_length; 
+    buffer.length = buffer_length;
     buffer.offset = 0;
     buffer.hooks = global_hooks;
 
@@ -2544,6 +2546,7 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateIntArray(const int *numbers, int count)
     }
 
     a = cJSON_CreateArray();
+
     for(i = 0; a && (i < (size_t)count); i++)
     {
         n = cJSON_CreateNumber(numbers[i]);
@@ -2562,7 +2565,10 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateIntArray(const int *numbers, int count)
         }
         p = n;
     }
-    a->child->prev = n;
+
+    if (a && a->child) {
+        a->child->prev = n;
+    }
 
     return a;
 }
@@ -2599,7 +2605,10 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateFloatArray(const float *numbers, int count)
         }
         p = n;
     }
-    a->child->prev = n;
+
+    if (a && a->child) {
+        a->child->prev = n;
+    }
 
     return a;
 }
@@ -2618,7 +2627,7 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateDoubleArray(const double *numbers, int count)
 
     a = cJSON_CreateArray();
 
-    for(i = 0;a && (i < (size_t)count); i++)
+    for(i = 0; a && (i < (size_t)count); i++)
     {
         n = cJSON_CreateNumber(numbers[i]);
         if(!n)
@@ -2636,7 +2645,10 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateDoubleArray(const double *numbers, int count)
         }
         p = n;
     }
-    a->child->prev = n;
+
+    if (a && a->child) {
+        a->child->prev = n;
+    }
 
     return a;
 }
@@ -2673,7 +2685,10 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateStringArray(const char *const *strings, int co
         }
         p = n;
     }
-    a->child->prev = n;
+
+    if (a && a->child) {
+        a->child->prev = n;
+    }
 
     return a;
 }

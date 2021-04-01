@@ -960,7 +960,9 @@ static int apply_patch(cJSON *object, const cJSON *patch, const cJSON_bool case_
 
     /* split pointer in parent and child */
     parent_pointer = cJSONUtils_strdup((unsigned char*)path->valuestring);
-    child_pointer = (unsigned char*)strrchr((char*)parent_pointer, '/');
+    if (parent_pointer) {
+        child_pointer = (unsigned char*)strrchr((char*)parent_pointer, '/');
+    }
     if (child_pointer != NULL)
     {
         child_pointer[0] = '\0';
@@ -1406,6 +1408,10 @@ static cJSON *generate_merge_patch(cJSON * const from, cJSON * const to, const c
     from_child = from->child;
     to_child = to->child;
     patch = cJSON_CreateObject();
+    if (patch == NULL)
+    {
+        return NULL;
+    }
     while (from_child || to_child)
     {
         int diff;
