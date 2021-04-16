@@ -6,5 +6,6 @@ Ultralightweight JSON parser in ANSI C.
 
 Offical repository: https://github.com/DaveGamble/cJSON
 
-Welcome to submit PR to synchronize with the official repository.
+- Maintenance: [Meco Man](https://github.com/mysterywolf)
+- Homepage: https://github.com/RT-Thread-packages/cJSON
 
