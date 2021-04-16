@@ -8,4 +8,4 @@
 
 
 - 维护：[Meco Man](https://github.com/mysterywolf)
-- 主页：<https://github.com/RT-Thread-packages/vi>
+- 主页：https://github.com/RT-Thread-packages/cJSON
