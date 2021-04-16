@@ -6,4 +6,6 @@
 
 官方仓库：https://github.com/DaveGamble/cJSON
 
-欢迎提交PR来同步官方仓库
+
+- 维护：[Meco Man](https://github.com/mysterywolf)
+- 主页：<https://github.com/RT-Thread-packages/vi>
