@@ -116,11 +116,6 @@ CJSON_PUBLIC(double) cJSON_GetNumberValue(const cJSON * const item)
     return item->valuedouble;
 }
 
-/* This is a safeguard to prevent copy-pasters from using incompatible C and header files */
-#if (CJSON_VERSION_MAJOR != 1) || (CJSON_VERSION_MINOR != 7) || (CJSON_VERSION_PATCH != 15)
-    #error cJSON.h and cJSON.c have different versions. Make sure that both have the same.
-#endif
-
 CJSON_PUBLIC(const char*) cJSON_Version(void)
 {
     static char version[15];
@@ -561,6 +556,10 @@ static cJSON_bool print_number(const cJSON * const item, printbuffer * const out
     if (isnan(d) || isinf(d))
     {
         length = sprintf((char*)number_buffer, "null");
+    }
+    else if(d == (double)item->valueint)
+    {
+        length = sprintf((char*)number_buffer, "%d", item->valueint);
     }
     else
     {
