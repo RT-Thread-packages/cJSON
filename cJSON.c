@@ -56,6 +56,7 @@
 #pragma GCC visibility pop
 #endif
 
+#include <rtthread.h>
 #include "cJSON.h"
 
 /* define our own boolean type */
@@ -169,6 +170,10 @@ static void * CJSON_CDECL internal_realloc(void *pointer, size_t size)
 {
     return realloc(pointer, size);
 }
+#elif defined(__RTTHREAD__)
+#define internal_malloc rt_malloc
+#define internal_free rt_free
+#define internal_realloc rt_realloc
 #else
 #define internal_malloc malloc
 #define internal_free free
@@ -196,7 +201,7 @@ static unsigned char* cJSON_strdup(const unsigned char* string, const internal_h
     {
         return NULL;
     }
-    memcpy(copy, string, length);
+    rt_memcpy(copy, string, length);
 
     return copy;
 }
@@ -238,7 +243,7 @@ static cJSON *cJSON_New_Item(const internal_hooks * const hooks)
     cJSON* node = (cJSON*)hooks->allocate(sizeof(cJSON));
     if (node)
     {
-        memset(node, '\0', sizeof(cJSON));
+        rt_memset(node, '\0', sizeof(cJSON));
     }
 
     return node;
@@ -507,7 +512,7 @@ static unsigned char* ensure(printbuffer * const p, size_t needed)
             return NULL;
         }
 
-        memcpy(newbuffer, p->buffer, p->offset + 1);
+        rt_memcpy(newbuffer, p->buffer, p->offset + 1);
         p->hooks.deallocate(p->buffer);
     }
     p->length = newsize;
@@ -957,7 +962,7 @@ static cJSON_bool print_string_ptr(const unsigned char * const input, printbuffe
     if (escape_characters == 0)
     {
         output[0] = '\"';
-        memcpy(output + 1, input, output_length);
+        rt_memcpy(output + 1, input, output_length);
         output[output_length + 1] = '\"';
         output[output_length + 2] = '\0';
 
@@ -1185,7 +1190,7 @@ static unsigned char *print(const cJSON * const item, cJSON_bool format, const i
     printbuffer buffer[1];
     unsigned char *printed = NULL;
 
-    memset(buffer, 0, sizeof(buffer));
+    rt_memset(buffer, 0, sizeof(buffer));
 
     /* create buffer */
     buffer->buffer = (unsigned char*) hooks->allocate(default_buffer_size);
@@ -1220,7 +1225,7 @@ static unsigned char *print(const cJSON * const item, cJSON_bool format, const i
         {
             goto fail;
         }
-        memcpy(printed, buffer->buffer, cjson_min(buffer->length, buffer->offset + 1));
+        rt_memcpy(printed, buffer->buffer, cjson_min(buffer->length, buffer->offset + 1));
         printed[buffer->offset] = '\0'; /* just to be sure */
 
         /* free the buffer */
@@ -1414,7 +1419,7 @@ static cJSON_bool print_value(const cJSON * const item, printbuffer * const outp
             {
                 return false;
             }
-            memcpy(output, item->valuestring, raw_length);
+            rt_memcpy(output, item->valuestring, raw_length);
             return true;
         }
 
@@ -1941,7 +1946,7 @@ static cJSON *create_reference(const cJSON *item, const internal_hooks * const h
         return NULL;
     }
 
-    memcpy(reference, item, sizeof(cJSON));
+    rt_memcpy(reference, item, sizeof(cJSON));
     reference->string = NULL;
     reference->type |= cJSON_IsReference;
     reference->next = reference->prev = NULL;

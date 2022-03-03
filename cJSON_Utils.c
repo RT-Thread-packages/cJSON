@@ -50,6 +50,7 @@
 #pragma GCC visibility pop
 #endif
 
+#include <rtthread.h>
 #include "cJSON_Utils.h"
 
 /* define our own boolean type */
@@ -74,7 +75,7 @@ static unsigned char* cJSONUtils_strdup(const unsigned char* const string)
     {
         return NULL;
     }
-    memcpy(copy, string, length);
+    rt_memcpy(copy, string, length);
 
     return copy;
 }
@@ -801,7 +802,7 @@ static void overwrite_item(cJSON * const root, const cJSON replacement)
         cJSON_Delete(root->child);
     }
 
-    memcpy(root, &replacement, sizeof(cJSON));
+    rt_memcpy(root, &replacement, sizeof(cJSON));
 }
 
 static int apply_patch(cJSON *object, const cJSON *patch, const cJSON_bool case_sensitive)
